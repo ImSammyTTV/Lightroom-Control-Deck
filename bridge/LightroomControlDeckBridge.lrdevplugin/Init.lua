@@ -12,6 +12,7 @@ local LrFunctionContext = import 'LrFunctionContext'
 local LrLogger = import 'LrLogger'
 local LrSelection = import 'LrSelection'
 local LrSocket = import 'LrSocket'
+local LrStringUtils = import 'LrStringUtils'
 local LrTasks = import 'LrTasks'
 local LrUndo = import 'LrUndo'
 
@@ -28,6 +29,7 @@ local senderConnected = false
 local watched = {}
 local lastSent = {}
 local copiedSettings
+local pendingThumb, thumbRef -- the newest thumbnail of the selected photo, waiting to be sent
 
 local senderDead, receiverDead = false, false
 
@@ -263,6 +265,14 @@ local function reportState()
 		lastSent.state = line
 		send(line)
 	end
+	-- A small preview of the selected photo for the Browse dial. Keep the request reference or Lightroom may drop it.
+	local id = photo.localIdentifier
+	if lastSent.thumbId ~= id then
+		lastSent.thumbId = id
+		thumbRef = photo:requestJpegThumbnail(150, 100, function(data)
+			if data then pendingThumb = (LrStringUtils.encodeBase64(data):gsub('%s', '')) end
+		end)
+	end
 end
 
 -- Watchdog: if the bridge ever exits abnormally, start it again rather than leaving Lightroom deaf.
@@ -322,6 +332,7 @@ LrTasks.startAsyncTask(function()
 			end
 			if senderConnected then
 				try(reportState)
+				if pendingThumb then local t = pendingThumb; pendingThumb = nil; send('thumb:' .. t) end
 				for param in pairs(watched) do try(reportValue, param) end
 			end
 		end

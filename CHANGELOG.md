@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.3
+- The Browse dial shows a preview of the selected photo, and updates as you scroll through the shoot.
+
 ## 0.1.2
 - New plugin icon: a photo above three Develop sliders.
 

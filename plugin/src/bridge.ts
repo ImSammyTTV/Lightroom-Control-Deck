@@ -19,6 +19,10 @@ class Bridge extends EventEmitter {
 	private watched = new Set<string>();
 	/** Latest rating / pick flag (1 pick, -1 reject, 0 none) / colour label / module of the selected photo. */
 	state: PhotoState = { rating: 0, flag: 0, label: "none", module: "" };
+	/** Base64 JPEG preview of the selected photo, once Lightroom has sent one. */
+	thumb = "";
+	/** True when the preview is taller than it is wide. */
+	thumbPortrait = false;
 
 	start(): void {
 		this.connectStatus();
@@ -108,6 +112,12 @@ class Bridge extends EventEmitter {
 
 	private handleStatus(line: string): void {
 		const [kind, param, value, min, max] = line.split(":");
+		if (kind === "thumb") {
+			this.thumb = param ?? "";
+			this.thumbPortrait = isPortraitJpeg(this.thumb);
+			this.emit("thumb", this.thumb);
+			return;
+		}
 		if (kind === "state") {
 			// state:<rating>:<pickStatus>:<colorLabel>:<module>
 			this.state = { rating: Number(param), flag: Number(value), label: ["red", "yellow", "green", "blue", "purple"].includes(min) ? min : "none", module: max ?? "" };
@@ -122,3 +132,15 @@ class Bridge extends EventEmitter {
 }
 
 export const bridge = new Bridge();
+
+/** Reads the size out of a base64 JPEG (its start-of-frame marker) to tell portrait from landscape. */
+function isPortraitJpeg(base64: string): boolean {
+	const data = Buffer.from(base64.slice(0, 4000), "base64");
+	for (let i = 2; i + 9 < data.length; ) {
+		if (data[i] !== 0xff) { i++; continue; }
+		const marker = data[i + 1];
+		if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) return data.readUInt16BE(i + 5) > data.readUInt16BE(i + 7);
+		i += 2 + data.readUInt16BE(i + 2);
+	}
+	return false;
+}

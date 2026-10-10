@@ -228,15 +228,27 @@ export function tagCanvas(label: string): string {
 	return card(cap("Colour tag") + sw + `<text x="186" y="90" font-size="12" fill="${C.muted}" text-anchor="end" font-family="${FONT}">${label === "none" ? "none" : label}</text>`);
 }
 
-export function browseCanvas(flag: number): string {
-	const slide = (x: number, w: number, h: number, hot: boolean) => `<rect x="${x}" y="${58 - h / 2}" width="${w}" height="${h}" rx="6" fill="${hot ? "#2b2d32" : "#222428"}" stroke="${hot ? C.ink : C.edge}" stroke-width="${hot ? 1.5 : 1}"/>`;
-	const flagIcon = flag === 1 ? icons.flagPick : flag === -1 ? icons.flagReject : "";
+const flagGlyph = (flag: number) => (flag === 1 ? icons.flagPick : flag === -1 ? icons.flagReject : "");
+const flagWord = (flag: number) => (flag === 1 ? "picked" : flag === -1 ? "rejected" : "unflagged");
+
+/** The Browse card on its own, used until Lightroom has sent a preview of the selected photo. */
+export function browseCanvas(flag: number, rating = 0): string {
+	const g = flagGlyph(flag);
 	return card(
-		cap("Browse") + slide(14, 34, 34, false) + slide(70, 60, 50, true) + slide(152, 34, 34, false) +
-			`<g transform="translate(78 44) scale(1.1)">${icons.loupe}</g>` +
-			(flagIcon ? `<g transform="translate(110 38) scale(.95)">${flagIcon}</g>` : "") +
-			`<text x="100" y="91" font-size="11" fill="${C.muted}" text-anchor="middle" font-family="${FONT}">${flag === 1 ? "picked" : flag === -1 ? "rejected" : "unflagged"}</text>`,
+		cap("Browse") + `<rect x="60" y="30" width="80" height="54" rx="8" fill="#222428" stroke="${C.edge}" stroke-width="1.5"/><g transform="translate(88 45)">${icons.loupe}</g>` +
+			`<text x="30" y="62" font-size="15" font-weight="600" fill="${rating ? C.pencilYellow : C.muted}" text-anchor="middle" font-family="${FONT}">${rating ? "★" + rating : "–"}</text>` +
+			(g ? `<g transform="translate(152 44)">${g}</g>` : "") +
+			`<text x="100" y="95" font-size="11" fill="${C.muted}" text-anchor="middle" font-family="${FONT}">${flagWord(flag)}</text>`,
 	);
+}
+
+/** The right half of the Browse card; the photo preview fills the left half (see layouts/browse.json). */
+export function browsePanel(flag: number, rating = 0): string {
+	const g = flagGlyph(flag);
+	return toUrl(`<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="2" width="98" height="96" rx="10" fill="${C.slide}" stroke="${C.edge}" stroke-width="1.5"/>${cap("Browse", 12)}` +
+		(g ? `<g transform="translate(14 32) scale(1.3)">${g}</g>` : "") +
+		`<text x="54" y="58" font-size="20" font-weight="600" fill="${rating ? C.pencilYellow : C.muted}" font-family="${FONT}">${rating ? "★" + rating : "–"}</text>` +
+		`<text x="49" y="88" font-size="11" fill="${C.muted}" text-anchor="middle" font-family="${FONT}">${flagWord(flag)}</text></svg>`);
 }
 
 export function loupeCanvas(accent: string): string {

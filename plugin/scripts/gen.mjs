@@ -41,6 +41,11 @@ for (const [id, html] of Object.entries(pages)) writeFileSync(`${SD}/ui/${id}.ht
 // ---- layout used by every dial for its touch-strip card -----------------------------------------------------------
 writeFileSync(`${SD}/layouts/card.json`, JSON.stringify({ $schema: "https://schemas.elgato.com/streamdeck/plugins/layout.json", id: `${brand.uuid}.card`, items: [{ key: "canvas", type: "pixmap", rect: [0, 0, 200, 100] }] }, null, 2));
 
+// The Browse dial uses these while it shows a photo preview: the photo on the left (sized for landscape or portrait), the details on the right.
+for (const [name, thumb] of [["browse", [4, 19, 92, 61]], ["browse-portrait", [26, 10, 48, 80]]]) {
+  writeFileSync(`${SD}/layouts/${name}.json`, JSON.stringify({ $schema: "https://schemas.elgato.com/streamdeck/plugins/layout.json", id: `${brand.uuid}.${name}`, items: [{ key: "thumb", type: "pixmap", rect: thumb }, { key: "canvas", type: "pixmap", rect: [100, 0, 100, 100] }] }, null, 2));
+}
+
 // ---- icons and profiles -----------------------------------------------------------------------------------------------
 await import("./icons.mjs");
 const { buildProfiles } = await import("./profiles.mjs");

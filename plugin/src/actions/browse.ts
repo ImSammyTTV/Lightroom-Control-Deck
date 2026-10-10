@@ -1,7 +1,7 @@
 import { action, DialDownEvent, DialRotateEvent, DidReceiveSettingsEvent, SingletonAction, TouchTapEvent, WillAppearEvent, WillDisappearEvent, type Action } from "@elgato/streamdeck";
 
 import { bridge } from "../bridge";
-import { brand, browseCanvas, loupeCanvas, ratingCanvas, tagCanvas } from "../render";
+import { brand, browseCanvas, browsePanel, loupeCanvas, ratingCanvas, tagCanvas } from "../render";
 import { throttle } from "../throttle";
 
 type Mode = "browse" | "stars" | "tag" | "loupe";
@@ -19,11 +19,13 @@ const TAGS = ["none", "red", "yellow", "green", "blue", "purple"];
 @action({ UUID: `${brand.uuid}.browse` })
 export class BrowseAction extends SingletonAction<Settings> {
 	private visible = new Map<string, Action<Settings>>();
+	private layouts = new Map<string, string>();
 
 	constructor() {
 		super();
 		const repaint = throttle(() => this.visible.forEach((a) => void this.paint(a)));
 		bridge.on("state", repaint);
+		bridge.on("thumb", repaint);
 	}
 
 	override onWillAppear(ev: WillAppearEvent<Settings>): Promise<void> | void {
@@ -33,6 +35,7 @@ export class BrowseAction extends SingletonAction<Settings> {
 
 	override onWillDisappear(ev: WillDisappearEvent<Settings>): void {
 		this.visible.delete(ev.action.id);
+		this.layouts.delete(ev.action.id);
 	}
 
 	override onDidReceiveSettings(ev: DidReceiveSettingsEvent<Settings>): Promise<void> | void {
@@ -71,7 +74,17 @@ export class BrowseAction extends SingletonAction<Settings> {
 		const { mode = "browse", accent } = await a.getSettings();
 		const s = bridge.state;
 		const color = accent ?? brand.colors.pencilYellow;
-		const canvas = { browse: browseCanvas(s.flag), stars: ratingCanvas(s.rating, color), tag: tagCanvas(s.label), loupe: loupeCanvas(color) }[mode];
+		const withPhoto = mode === "browse" && bridge.thumb !== "";
+		const layout = !withPhoto ? "layouts/card.json" : bridge.thumbPortrait ? "layouts/browse-portrait.json" : "layouts/browse.json";
+		if (this.layouts.get(a.id) !== layout) {
+			this.layouts.set(a.id, layout);
+			await a.setFeedbackLayout(layout);
+		}
+		if (withPhoto) {
+			await a.setFeedback({ canvas: browsePanel(s.flag, s.rating), thumb: `data:image/jpeg;base64,${bridge.thumb}` });
+			return;
+		}
+		const canvas = { browse: browseCanvas(s.flag, s.rating), stars: ratingCanvas(s.rating, color), tag: tagCanvas(s.label), loupe: loupeCanvas(color) }[mode];
 		await a.setFeedback({ canvas });
 	}
 }
