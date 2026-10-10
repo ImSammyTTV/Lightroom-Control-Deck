@@ -1,0 +1,25 @@
+{
+  "name": "com.imsammy.lightroom-control-deck",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/gen.mjs && rollup -c",
+    "watch": "node scripts/gen.mjs && rollup -c -w"
+  },
+  "devDependencies": {
+    "@elgato/cli": "^1.10.2",
+    "@elgato/streamdeck": "^3.0.2",
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^24.19.2",
+    "fflate": "^0.8.3",
+    "luaparse": "^0.3.1",
+    "rollup": "^4.64.3",
+    "sharp": "^0.35.5",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
+  }
+}

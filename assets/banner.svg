@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="340" viewBox="0 0 1280 340" role="img" aria-label="Lightroom Control Deck: cull on the keys, grade on the dials">
+  <title>Lightroom Control Deck</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b1c20"/><stop offset="1" stop-color="#0e0e10"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ffd23f" stop-opacity="0.12"/><stop offset="1" stop-color="#ffd23f" stop-opacity="0"/></linearGradient>
+    <linearGradient id="hue" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ff5a4d"/><stop offset=".2" stop-color="#ffd23f"/><stop offset=".4" stop-color="#8fe3c0"/>
+      <stop offset=".6" stop-color="#7aa8ff"/><stop offset=".8" stop-color="#c3a6ff"/><stop offset="1" stop-color="#ff7ab8"/>
+    </linearGradient>
+    <linearGradient id="sweep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/><stop offset=".5" stop-color="#ffffff" stop-opacity="0.2"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="bannerClip"><rect width="1280" height="340" rx="22"/></clipPath>
+  </defs>
+
+  <style>
+    /* One 9s loop; everything is timed inside it. */
+    .cap { fill: #232529; stroke: #ffd23f; stroke-opacity: 0; stroke-width: 2.5; }
+    .k-pick { animation: p1 9s infinite; }
+    .k-star { animation: p2 9s infinite; }
+    .k-red { animation: p3 9s infinite; }
+    .k-bank { animation: p4 9s infinite; }
+    @keyframes p1 { 0%,6%,16%,100% { fill:#232529; stroke-opacity:0 } 9%,13% { fill:#2b3d33; stroke:#5ee08f; stroke-opacity:1 } }
+    @keyframes p2 { 0%,26%,36%,100% { fill:#232529; stroke-opacity:0 } 29%,33% { fill:#443d27; stroke:#ffd23f; stroke-opacity:1 } }
+    @keyframes p3 { 0%,50%,60%,100% { fill:#232529; stroke-opacity:0 } 53%,57% { fill:#43292a; stroke:#ff5a4d; stroke-opacity:1 } }
+    @keyframes p4 { 0%,72%,82%,100% { fill:#232529; stroke-opacity:0 } 75%,79% { fill:#3a3047; stroke:#c3a6ff; stroke-opacity:1 } }
+
+    .star { fill: #4a4c52; }
+    .s1 { animation: lit 9s infinite 0s; } .s2 { animation: lit 9s infinite .3s; } .s3 { animation: lit 9s infinite .6s; }
+    .s4 { animation: lit 9s infinite .9s; } .s5 { animation: lit 9s infinite 1.2s; }
+    @keyframes lit { 0%,30% { fill:#4a4c52 } 34%,88% { fill:#ffd23f } 94%,100% { fill:#4a4c52 } }
+
+    .exp-thumb { animation: expMove 9s infinite ease-in-out; }
+    @keyframes expMove { 0%,10% { transform: translateX(0) } 28%,46% { transform: translateX(14px) } 64%,82% { transform: translateX(-12px) } 100% { transform: translateX(0) } }
+    .ea { animation: eA 9s infinite; } .eb { animation: eB 9s infinite; } .ec { animation: eC 9s infinite; }
+    @keyframes eA { 0%,12% {opacity:1} 16%,90% {opacity:0} 94%,100% {opacity:1} }
+    @keyframes eB { 0%,16% {opacity:0} 22%,48% {opacity:1} 52%,100% {opacity:0} }
+    @keyframes eC { 0%,56% {opacity:0} 62%,84% {opacity:1} 88%,100% {opacity:0} }
+    .con-thumb { animation: conMove 9s infinite ease-in-out; }
+    @keyframes conMove { 0%,100% { transform: translateX(0) } 35% { transform: translateX(-10px) } 70% { transform: translateX(11px) } }
+    .hue-thumb { animation: hueMove 9s infinite ease-in-out; }
+    @keyframes hueMove { 0%,100% { transform: translateX(-16px) } 50% { transform: translateX(26px) } }
+
+    .dial { transform-box: fill-box; transform-origin: center; }
+    .d1 { animation: turnA 9s infinite ease-in-out; } .d2 { animation: turnB 9s infinite ease-in-out; }
+    .d3 { animation: turnA 9s infinite ease-in-out; animation-delay: -3s; } .d4 { animation: turnB 9s infinite ease-in-out; animation-delay: -5s; }
+    @keyframes turnA { 0%,100% { transform: rotate(-35deg) } 50% { transform: rotate(45deg) } }
+    @keyframes turnB { 0%,100% { transform: rotate(30deg) } 50% { transform: rotate(-50deg) } }
+
+    /* the logo's sliders slide */
+    .m1,.m2,.m3 { transform-box: fill-box; transform-origin: left center; }
+    .m1 { animation: g1 9s infinite ease-in-out; } .m2 { animation: g2 9s infinite ease-in-out; } .m3 { animation: g3 9s infinite ease-in-out; }
+    .n1 { animation: k1 9s infinite ease-in-out; } .n2 { animation: k2 9s infinite ease-in-out; } .n3 { animation: k3 9s infinite ease-in-out; }
+    @keyframes g1 { 0%,100% { transform: scaleX(.55) } 50% { transform: scaleX(.85) } }
+    @keyframes g2 { 0%,100% { transform: scaleX(.3) } 50% { transform: scaleX(.15) } }
+    @keyframes g3 { 0%,100% { transform: scaleX(.7) } 50% { transform: scaleX(.4) } }
+    @keyframes k1 { 0%,100% { transform: translateX(46px) } 50% { transform: translateX(71px) } }
+    @keyframes k2 { 0%,100% { transform: translateX(25px) } 50% { transform: translateX(13px) } }
+    @keyframes k3 { 0%,100% { transform: translateX(59px) } 50% { transform: translateX(34px) } }
+
+    /* six bank dots take turns */
+    .b1 { animation: bank 9s infinite 0s; } .b2 { animation: bank 9s infinite 1.5s; } .b3 { animation: bank 9s infinite 3s; }
+    .b4 { animation: bank 9s infinite 4.5s; } .b5 { animation: bank 9s infinite 6s; } .b6 { animation: bank 9s infinite 7.5s; }
+    @keyframes bank { 0%,16% { opacity: 1; transform: scale(1.35) } 17%,100% { opacity: .35; transform: scale(1) } }
+    .bd { transform-box: fill-box; transform-origin: center; }
+
+    .shine { animation: shine 9s infinite ease-in-out; }
+    @keyframes shine { 0%,22% { transform: translateX(-420px) } 52%,100% { transform: translateX(1700px) } }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+      .star { fill: #ffd23f; } .s4, .s5 { fill: #4a4c52; }
+      .eb, .ec, .shine { opacity: 0; }
+    }
+  </style>
+
+  <rect width="1280" height="340" rx="22" fill="url(#bg)"/>
+  <rect width="1280" height="340" rx="22" fill="url(#glow)"/>
+  <rect x="3" y="3" width="1274" height="334" rx="20" fill="none" stroke="#3a3c41" stroke-width="2"/>
+
+  <!-- mark: a photo above three Develop-style sliders -->
+  <g transform="translate(64 76)">
+    <rect width="132" height="132" rx="28" fill="#17181b"/>
+    <rect x="3" y="3" width="126" height="126" rx="25" fill="none" stroke="#3a3c41" stroke-width="3"/>
+    <clipPath id="ph"><rect x="18" y="18" width="96" height="56" rx="10"/></clipPath>
+    <g clip-path="url(#ph)"><rect x="18" y="18" width="96" height="56" fill="#4a7fe0"/><circle cx="90" cy="36" r="8" fill="#ffd23f"/>
+      <path d="M18 74V58l22-22 17 17 14-12 43 33z" fill="#1b2538"/><path d="M18 74v-7l28-16 15 11 18-10 35 22z" fill="#10151f"/></g>
+    <rect x="18" y="18" width="96" height="56" rx="10" fill="none" stroke="#f3efe4" stroke-opacity=".55" stroke-width="2"/>
+    <g stroke-linecap="round" stroke-width="5"><path d="M24 90h84M24 102h84M24 114h84" stroke="#3a3c41"/></g>
+    <g stroke-linecap="round" stroke-width="5"><path class="m1" d="M24 90h84" stroke="#8fe3c0"/><path class="m2" d="M24 102h84" stroke="#ff9f5a"/><path class="m3" d="M24 114h84" stroke="#ff7ab8"/></g>
+    <g fill="#f3efe4"><circle class="n1" cx="24" cy="90" r="5.5"/><circle class="n2" cx="24" cy="102" r="5.5"/><circle class="n3" cx="24" cy="114" r="5.5"/></g>
+  </g>
+
+  <!-- title -->
+  <text x="232" y="132" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#f3efe4">Lightroom</text>
+  <text x="232" y="190" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="52" font-weight="700" fill="#ffd23f">Control Deck</text>
+  <text x="234" y="236" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" fill="#9a968a">Cull on the keys. Grade on the dials,</text>
+  <text x="234" y="266" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" fill="#9a968a">with live values back on the deck.</text>
+  <g transform="translate(236 292)">
+    <circle class="bd b1" cx="5" cy="0" r="5" fill="#ffd23f"/><circle class="bd b2" cx="27" cy="0" r="5" fill="#8fe3c0"/><circle class="bd b3" cx="49" cy="0" r="5" fill="#ff9f5a"/>
+    <circle class="bd b4" cx="71" cy="0" r="5" fill="#ff7ab8"/><circle class="bd b5" cx="93" cy="0" r="5" fill="#7aa8ff"/><circle class="bd b6" cx="115" cy="0" r="5" fill="#c3a6ff"/>
+  </g>
+
+  <!-- deck illustration -->
+  <g transform="translate(850 44)">
+    <rect width="372" height="252" rx="26" fill="#17181b"/>
+    <rect x="2" y="2" width="368" height="248" rx="24" fill="none" stroke="#3a3c41" stroke-width="2"/>
+    <g transform="translate(22 20)">
+      <rect class="cap k-pick" width="76" height="76" rx="12"/>
+      <path d="M26 22h5v34h-5z M31 24h22l-6 8 6 8H31z" fill="#5ee08f"/>
+      <rect class="cap k-star" x="86" width="76" height="76" rx="12"/>
+      <path d="M124 20l5.5 12 13 1.5-9.6 9 2.6 13L124 49l-11.5 6.5 2.6-13-9.6-9 13-1.5z" fill="#ffd23f"/>
+      <rect class="cap k-red" x="172" width="76" height="76" rx="12"/>
+      <path d="M200 26h22l10 12-10 12h-22z" fill="#ff5a4d"/>
+      <rect class="cap k-bank" x="258" width="76" height="76" rx="12"/>
+      <g stroke="#f3efe4" stroke-width="3" stroke-linecap="round" fill="none"><path d="M276 28h40M276 38h40M276 48h40"/></g>
+      <circle cx="288" cy="28" r="4.5" fill="#c3a6ff"/><circle cx="306" cy="38" r="4.5" fill="#c3a6ff"/><circle cx="294" cy="48" r="4.5" fill="#c3a6ff"/>
+    </g>
+    <rect x="20" y="118" width="332" height="68" rx="8" fill="#0b0b0d"/>
+    <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="9" fill="#9a968a">
+      <rect x="24" y="122" width="78" height="60" rx="6" fill="#232529"/><text x="31" y="136">EXPOSURE</text>
+      <text class="ea" x="31" y="152" font-size="13" font-weight="600" fill="#f3efe4">+0.45</text>
+      <text class="eb" x="31" y="152" font-size="13" font-weight="600" fill="#f3efe4" opacity="0">+1.20</text>
+      <text class="ec" x="31" y="152" font-size="13" font-weight="600" fill="#f3efe4" opacity="0">-0.35</text>
+      <rect x="28" y="165" width="68" height="5" rx="2.5" fill="#3a3c41"/><g transform="translate(0 14)"><path class="exp-thumb" d="M62 151l4 5a5 5 0 1 1-8 0z" fill="#8fe3c0"/></g>
+      <rect x="106" y="122" width="78" height="60" rx="6" fill="#232529"/><text x="113" y="136">CONTRAST</text><text x="113" y="152" font-size="13" font-weight="600" fill="#f3efe4">+25</text>
+      <rect x="110" y="165" width="68" height="5" rx="2.5" fill="#3a3c41"/><g transform="translate(0 14)"><path class="con-thumb" d="M144 151l4 5a5 5 0 1 1-8 0z" fill="#8fe3c0"/></g>
+      <rect x="188" y="122" width="78" height="60" rx="6" fill="#232529"/><text x="195" y="136">SHADOWS</text><text x="195" y="152" font-size="13" font-weight="600" fill="#f3efe4">Hue</text>
+      <rect x="192" y="165" width="68" height="5" rx="2.5" fill="url(#hue)"/><g transform="translate(0 14)"><path class="hue-thumb" d="M226 151l4 5a5 5 0 1 1-8 0z" fill="#f3efe4"/></g>
+      <rect x="270" y="122" width="78" height="60" rx="6" fill="#232529"/><text x="277" y="136">STARS</text>
+      <circle class="star s1" cx="283" cy="165" r="4"/><circle class="star s2" cx="296" cy="165" r="4"/><circle class="star s3" cx="309" cy="165" r="4"/><circle class="star s4" cx="322" cy="165" r="4"/><circle class="star s5" cx="335" cy="165" r="4"/>
+    </g>
+    <g fill="#232529" stroke="#3a3c41" stroke-width="2">
+      <circle cx="63" cy="220" r="19"/><circle cx="145" cy="220" r="19"/><circle cx="227" cy="220" r="19"/><circle cx="309" cy="220" r="19"/>
+    </g>
+    <g stroke-width="2.5" stroke-linecap="round" fill="none">
+      <g class="dial d1" stroke="#8fe3c0"><circle cx="63" cy="220" r="19" stroke="none"/><path d="M63 205v8"/></g>
+      <g class="dial d2" stroke="#ff9f5a"><circle cx="145" cy="220" r="19" stroke="none"/><path d="M145 205v8"/></g>
+      <g class="dial d3" stroke="#ff7ab8"><circle cx="227" cy="220" r="19" stroke="none"/><path d="M227 205v8"/></g>
+      <g class="dial d4" stroke="#7aa8ff"><circle cx="309" cy="220" r="19" stroke="none"/><path d="M309 205v8"/></g>
+    </g>
+  </g>
+
+  <!-- light sweep across the whole banner -->
+  <g clip-path="url(#bannerClip)" pointer-events="none">
+    <g transform="skewX(-18)"><rect class="shine" x="0" y="0" width="340" height="340" fill="url(#sweep)"/></g>
+  </g>
+</svg>

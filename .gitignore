@@ -1,0 +1,8 @@
+node_modules/
+*.streamDeckPlugin
+plugin/com.imsammy.lightroom-control-deck.sdPlugin/bin/
+plugin/com.imsammy.lightroom-control-deck.sdPlugin/logs/
+plugin/src/generated/
+.DS_Store
+plugin/com.imsammy.lightroom-control-deck.sdPlugin/
+dist/

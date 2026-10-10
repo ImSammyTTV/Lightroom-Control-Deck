@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: plugin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: plugin/package-lock.json
+      - run: npm ci
+      - name: Build (bundle, icons, settings pages, profiles)
+        run: npm run build
+      - name: Validate the Stream Deck manifest
+        run: npx streamdeck validate com.imsammy.lightroom-control-deck.sdPlugin
+      - name: Package
+        run: npx streamdeck pack com.imsammy.lightroom-control-deck.sdPlugin --output ..
+      - name: Check the Lightroom Lua parses
+        run: |
+          node -e "const l=require('luaparse'),fs=require('fs'),d='../bridge/LightroomControlDeckBridge.lrdevplugin/';for(const f of fs.readdirSync(d)){l.parse(fs.readFileSync(d+f,'utf8'),{luaVersion:'5.1'});console.log('ok',f)}"
