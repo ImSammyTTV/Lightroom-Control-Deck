@@ -19,10 +19,8 @@ class Bridge extends EventEmitter {
 	private watched = new Set<string>();
 	/** Latest rating / pick flag (1 pick, -1 reject, 0 none) / colour label / module of the selected photo. */
 	state: PhotoState = { rating: 0, flag: 0, label: "none", module: "" };
-	/** Base64 JPEG preview of the selected photo, once Lightroom has sent one. */
-	thumb = "";
-	/** True when the preview is taller than it is wide. */
-	thumbPortrait = false;
+	/** Previews of the previous, selected and next photo (base64 JPEG). Empty when there isn't one. */
+	thumbs: Record<"p" | "c" | "n", { data: string; portrait: boolean }> = { p: { data: "", portrait: false }, c: { data: "", portrait: false }, n: { data: "", portrait: false } };
 
 	start(): void {
 		this.connectStatus();
@@ -113,9 +111,12 @@ class Bridge extends EventEmitter {
 	private handleStatus(line: string): void {
 		const [kind, param, value, min, max] = line.split(":");
 		if (kind === "thumb") {
-			this.thumb = param ?? "";
-			this.thumbPortrait = isPortraitJpeg(this.thumb);
-			this.emit("thumb", this.thumb);
+			// thumb:<p|c|n>:<base64 JPEG, or - for none>
+			if (param === "p" || param === "c" || param === "n") {
+				const data = value && value !== "-" ? value : "";
+				this.thumbs[param] = { data, portrait: data ? isPortraitJpeg(data) : false };
+				this.emit("thumb");
+			}
 			return;
 		}
 		if (kind === "state") {

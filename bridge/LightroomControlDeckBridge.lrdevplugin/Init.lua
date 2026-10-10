@@ -29,7 +29,8 @@ local senderConnected = false
 local watched = {}
 local lastSent = {}
 local copiedSettings
-local pendingThumb, thumbRef -- the newest thumbnail of the selected photo, waiting to be sent
+local pendingThumbs, thumbRefs, thumbCache, thumbOrder = {}, {}, {}, {} -- previews of the selected photo and its neighbours, waiting to be sent
+local thumbGeneration = 0
 
 local senderDead, receiverDead = false, false
 
@@ -253,6 +254,39 @@ local function handle(message)
 	end
 end
 
+-- Asks Lightroom for a small JPEG of a photo (or reuses one asked for earlier) and queues it under a slot: p, c or n.
+local requestNeighbourThumbs
+local function queueThumb(slot, photo, generation)
+	if not photo then pendingThumbs[slot] = '-'; return end
+	local id = photo.localIdentifier
+	if thumbCache[id] then pendingThumbs[slot] = thumbCache[id]; return end
+	thumbRefs[slot] = photo:requestJpegThumbnail(150, 100, function(data)
+		if not data then return end
+		local encoded = (LrStringUtils.encodeBase64(data):gsub('%s', ''))
+		thumbCache[id] = encoded
+		thumbOrder[#thumbOrder + 1] = id
+		if #thumbOrder > 60 then thumbCache[table.remove(thumbOrder, 1)] = nil end
+		if generation == thumbGeneration then pendingThumbs[slot] = encoded end
+	end)
+end
+
+requestNeighbourThumbs = function(photo)
+	thumbGeneration = thumbGeneration + 1
+	local gen = thumbGeneration
+	local prev, nxt
+	-- With one photo selected this is every photo in the filmstrip, in filmstrip order.
+	local ok, list = LrTasks.pcall(function() return LrApplication.activeCatalog():getMultipleSelectedOrAllPhotos() end)
+	if ok and type(list) == 'table' then
+		local id = photo.localIdentifier
+		for i = 1, #list do
+			if list[i].localIdentifier == id then prev, nxt = list[i - 1], list[i + 1]; break end
+		end
+	end
+	queueThumb('c', photo, gen)
+	queueThumb('p', prev, gen)
+	queueThumb('n', nxt, gen)
+end
+
 local function reportState()
 	local ok, photo = LrTasks.pcall(targetPhoto)
 	if not ok or not photo then return end
@@ -265,13 +299,11 @@ local function reportState()
 		lastSent.state = line
 		send(line)
 	end
-	-- A small preview of the selected photo for the Browse dial. Keep the request reference or Lightroom may drop it.
+	-- Small previews of the selected photo and the ones either side of it, for the Browse dial.
 	local id = photo.localIdentifier
 	if lastSent.thumbId ~= id then
 		lastSent.thumbId = id
-		thumbRef = photo:requestJpegThumbnail(150, 100, function(data)
-			if data then pendingThumb = (LrStringUtils.encodeBase64(data):gsub('%s', '')) end
-		end)
+		requestNeighbourThumbs(photo)
 	end
 end
 
@@ -332,7 +364,7 @@ LrTasks.startAsyncTask(function()
 			end
 			if senderConnected then
 				try(reportState)
-				if pendingThumb then local t = pendingThumb; pendingThumb = nil; send('thumb:' .. t) end
+				for slot, data in pairs(pendingThumbs) do pendingThumbs[slot] = nil; send('thumb:' .. slot .. ':' .. data) end
 				for param in pairs(watched) do try(reportValue, param) end
 			end
 		end

@@ -1,12 +1,18 @@
 import { action, DialDownEvent, DialRotateEvent, DidReceiveSettingsEvent, SingletonAction, TouchTapEvent, WillAppearEvent, WillDisappearEvent, type Action } from "@elgato/streamdeck";
 
 import { bridge } from "../bridge";
-import { brand, browseCanvas, browsePanel, loupeCanvas, ratingCanvas, tagCanvas } from "../render";
+import { brand, browseCanvas, browseHeader, loupeCanvas, ratingCanvas, tagCanvas } from "../render";
 import { throttle } from "../throttle";
 
 type Mode = "browse" | "stars" | "tag" | "loupe";
 type Settings = { mode?: Mode; accent?: string };
 
+import model from "../generated/model.json";
+
+/** Solid card grey, for the gaps around the previews and for an empty slot. */
+const GREY = `data:image/svg+xml;charset=utf8,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="4" height="4"><rect width="4" height="4" fill="#232529"/></svg>')}`;
+const jpeg = (data: string): string => (data ? `data:image/jpeg;base64,${data}` : GREY);
+const BG = model.browseBg as Record<string, string[]>;
 const TAGS = ["none", "red", "yellow", "green", "blue", "purple"];
 
 /**
@@ -74,14 +80,16 @@ export class BrowseAction extends SingletonAction<Settings> {
 		const { mode = "browse", accent } = await a.getSettings();
 		const s = bridge.state;
 		const color = accent ?? brand.colors.pencilYellow;
-		const withPhoto = mode === "browse" && bridge.thumb !== "";
-		const layout = !withPhoto ? "layouts/card.json" : bridge.thumbPortrait ? "layouts/browse-portrait.json" : "layouts/browse.json";
+		const { p, c, n } = bridge.thumbs;
+		const withPhoto = mode === "browse" && c.data !== "";
+		const combo = [p, c, n].map((x) => (x.portrait ? "P" : "L")).join("");
+		const layout = withPhoto ? `layouts/browse-${combo}.json` : "layouts/card.json";
 		if (this.layouts.get(a.id) !== layout) {
 			this.layouts.set(a.id, layout);
 			await a.setFeedbackLayout(layout);
 		}
 		if (withPhoto) {
-			await a.setFeedback({ canvas: browsePanel(s.flag, s.rating), thumb: `data:image/jpeg;base64,${bridge.thumb}` });
+			await a.setFeedback({ head: browseHeader(s.flag, s.rating), prev: jpeg(p.data), cur: jpeg(c.data), next: jpeg(n.data), ...Object.fromEntries(BG[combo].map((key) => [key, GREY])) });
 			return;
 		}
 		const canvas = { browse: browseCanvas(s.flag, s.rating), stars: ratingCanvas(s.rating, color), tag: tagCanvas(s.label), loupe: loupeCanvas(color) }[mode];

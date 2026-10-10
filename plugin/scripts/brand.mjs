@@ -6,7 +6,7 @@ export const brand = {
   slug: "lightroom-control-deck",
   uuid: "com.imsammy.lightroom-control-deck",
   author: "ImSammy",
-  version: "0.1.3.1",
+  version: "0.1.3.3",
   repo: "ImSammyTTV/Lightroom-Control-Deck",
   commandPort: 53110,
   statusPort: 53112,

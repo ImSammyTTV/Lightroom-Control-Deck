@@ -41,10 +41,39 @@ for (const [id, html] of Object.entries(pages)) writeFileSync(`${SD}/ui/${id}.ht
 // ---- layout used by every dial for its touch-strip card -----------------------------------------------------------
 writeFileSync(`${SD}/layouts/card.json`, JSON.stringify({ $schema: "https://schemas.elgato.com/streamdeck/plugins/layout.json", id: `${brand.uuid}.card`, items: [{ key: "canvas", type: "pixmap", rect: [0, 0, 200, 100] }] }, null, 2));
 
-// The Browse dial uses these while it shows a photo preview: the photo on the left (sized for landscape or portrait), the details on the right.
-for (const [name, thumb] of [["browse", [4, 19, 92, 61]], ["browse-portrait", [26, 10, 48, 80]]]) {
-  writeFileSync(`${SD}/layouts/${name}.json`, JSON.stringify({ $schema: "https://schemas.elgato.com/streamdeck/plugins/layout.json", id: `${brand.uuid}.${name}`, items: [{ key: "thumb", type: "pixmap", rect: thumb }, { key: "canvas", type: "pixmap", rect: [100, 0, 100, 100] }] }, null, 2));
+// The Browse dial uses these while it shows photo previews: the previous, selected and next photo in a row under a header.
+// One layout per mix of landscape (L) and portrait (P) photos, so nothing is stretched. The name spells out the three: browse-LPL.
+const slotRects = {
+  p: { L: [8, 40, 48, 32], P: [18, 36, 28, 42] },
+  c: { L: [62, 28, 76, 51], P: [78, 26, 46, 69] },
+  n: { L: [144, 40, 48, 32], P: [154, 36, 28, 42] },
+};
+// Layout items can't overlap, so the grey behind the photos is made of pieces that fill every gap around them.
+const gaps = (rects) => {
+  const top = 24, pieces = [];
+  let x = 0;
+  for (const [rx, ry, rw, rh] of rects) {
+    if (rx > x) pieces.push([x, top, rx - x, 100 - top]);
+    if (ry > top) pieces.push([rx, top, rw, ry - top]);
+    if (ry + rh < 100) pieces.push([rx, ry + rh, rw, 100 - ry - rh]);
+    x = rx + rw;
+  }
+  if (x < 200) pieces.push([x, top, 200 - x, 100 - top]);
+  return pieces;
+};
+const browseBg = {};
+for (const combo of ["L", "P"].flatMap((p) => ["L", "P"].flatMap((c) => ["L", "P"].map((n) => p + c + n)))) {
+  const rects = ["p", "c", "n"].map((slot, i) => slotRects[slot][combo[i]]);
+  const pieces = gaps(rects);
+  browseBg[combo] = pieces.map((_, i) => `bg${i}`);
+  const items = [
+    { key: "head", type: "pixmap", rect: [0, 0, 200, 24] },
+    ...pieces.map((rect, i) => ({ key: `bg${i}`, type: "pixmap", rect })),
+    ...["p", "c", "n"].map((slot, i) => ({ key: { p: "prev", c: "cur", n: "next" }[slot], type: "pixmap", rect: rects[i] })),
+  ];
+  writeFileSync(`${SD}/layouts/browse-${combo}.json`, JSON.stringify({ $schema: "https://schemas.elgato.com/streamdeck/plugins/layout.json", id: `${brand.uuid}.browse-${combo}`, items }, null, 2));
 }
+writeFileSync("src/generated/model.json", JSON.stringify({ commands, params, cropRatios, wheels, banks, brand, browseBg }, null, 1));
 
 // ---- icons and profiles -----------------------------------------------------------------------------------------------
 await import("./icons.mjs");

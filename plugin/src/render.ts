@@ -242,13 +242,10 @@ export function browseCanvas(flag: number, rating = 0): string {
 	);
 }
 
-/** The right half of the Browse card; the photo preview fills the left half (see layouts/browse.json). */
-export function browsePanel(flag: number, rating = 0): string {
-	const g = flagGlyph(flag);
-	return toUrl(`<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect x="0" y="2" width="98" height="96" rx="10" fill="${C.slide}" stroke="${C.edge}" stroke-width="1.5"/>${cap("Browse", 12)}` +
-		(g ? `<g transform="translate(14 32) scale(1.3)">${g}</g>` : "") +
-		`<text x="54" y="58" font-size="20" font-weight="600" fill="${rating ? C.pencilYellow : C.muted}" font-family="${FONT}">${rating ? "★" + rating : "–"}</text>` +
-		`<text x="49" y="88" font-size="11" fill="${C.muted}" text-anchor="middle" font-family="${FONT}">${flagWord(flag)}</text></svg>`);
+/** The strip above the three photo previews on the Browse card. */
+export function browseHeader(flag: number, rating = 0): string {
+	const bits = [rating ? "★" + rating : "", flag === 1 ? "picked" : flag === -1 ? "rejected" : ""].filter(Boolean).join("  ·  ");
+	return toUrl(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="24" viewBox="0 0 200 24"><rect x="2" y="2" width="196" height="22" rx="8" fill="${C.slide}"/>${cap("Browse", 12).replace('y="22"', 'y="17"')}<text x="188" y="17" font-size="12" fill="${flag === -1 ? C.pencilRed : C.muted}" text-anchor="end" font-family="${FONT}">${bits}</text></svg>`);
 }
 
 export function loupeCanvas(accent: string): string {
