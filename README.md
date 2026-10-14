@@ -101,7 +101,7 @@ You need two parts: the **Stream Deck plugin**, and a small **bridge** that runs
 
 1. **Download** both from the [latest release](https://github.com/ImSammyTTV/Lightroom-Control-Deck/releases/latest),
    or [build them yourself](#-for-developers).
-2. **Install the Stream Deck plugin.** Double-click `com.imsammy.lightroom-control-deck.streamDeckPlugin`. A profile for each
+2. **Install the Stream Deck plugin.** Double-click `Lightroom-Control-Deck.streamDeckPlugin`. A profile for each
    Stream Deck model installs with it.
 3. **Install the bridge.** Copy `LightroomControlDeckBridge.lrdevplugin` into Lightroom's modules folder:
 
