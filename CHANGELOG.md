@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.1.4
+- The plugin ID is now `com.lightroom-control-deck`. If you are updating, remove the old plugin and its profile in the Stream Deck app, then install this one.
+
 ## 0.1.3
 - The Browse dial shows previews of the previous, selected and next photo, and updates as you scroll through the shoot.
 

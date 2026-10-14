@@ -14,5 +14,5 @@ labels: bug
 - Windows or macOS:
 
 **Logs** (optional but very helpful)
-- Stream Deck plugin log: `Plugins/com.imsammy.lightroom-control-deck.sdPlugin/logs/`
+- Stream Deck plugin log: `Plugins/com.lightroom-control-deck.sdPlugin/logs/`
 - Lightroom bridge log: `LrClassicLogs/LightroomControlDeckBridge.log`

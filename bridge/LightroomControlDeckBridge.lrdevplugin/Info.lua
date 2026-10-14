@@ -1,7 +1,7 @@
 return {
 	LrSdkVersion = 6.0,
 	LrSdkMinimumVersion = 6.0,
-	LrToolkitIdentifier = 'com.imsammy.lightroom-control-deck.bridge',
+	LrToolkitIdentifier = 'com.lightroom-control-deck.bridge',
 	LrPluginName = 'Lightroom Control Deck Bridge',
 	LrInitPlugin = 'Init.lua',
 	LrShutdownPlugin = 'Shutdown.lua',

@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "types": ["node"],
-    "outDir": "com.imsammy.lightroom-control-deck.sdPlugin/bin"
+    "outDir": "com.lightroom-control-deck.sdPlugin/bin"
   },
   "include": ["src/**/*"]
 }

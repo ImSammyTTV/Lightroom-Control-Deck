@@ -220,7 +220,7 @@ currently has. If the photo has no tag, it does nothing.
 <details>
 <summary><b>Where are the logs?</b></summary>
 
-The Stream Deck plugin writes to `Plugins/com.imsammy.lightroom-control-deck.sdPlugin/logs/` in the Stream Deck folder.
+The Stream Deck plugin writes to `Plugins/com.lightroom-control-deck.sdPlugin/logs/` in the Stream Deck folder.
 The bridge writes warnings to `LrClassicLogs/LightroomControlDeckBridge.log` in Lightroom's logs folder.
 </details>
 
@@ -237,8 +237,8 @@ The bridge writes warnings to `LrClassicLogs/LightroomControlDeckBridge.log` in 
 cd plugin
 npm ci
 npm run build        # generates icons, settings pages and profiles, then bundles the plugin
-npx streamdeck validate com.imsammy.lightroom-control-deck.sdPlugin
-npx streamdeck pack com.imsammy.lightroom-control-deck.sdPlugin --output ..
+npx streamdeck validate com.lightroom-control-deck.sdPlugin
+npx streamdeck pack com.lightroom-control-deck.sdPlugin --output ..
 ```
 
 Every push builds, validates and packages the plugin on GitHub Actions (`.github/workflows/ci.yml`) and checks that the

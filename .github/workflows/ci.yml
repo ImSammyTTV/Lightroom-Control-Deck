@@ -22,9 +22,9 @@ jobs:
       - name: Build (bundle, icons, settings pages, profiles)
         run: npm run build
       - name: Validate the Stream Deck manifest
-        run: npx streamdeck validate com.imsammy.lightroom-control-deck.sdPlugin
+        run: npx streamdeck validate com.lightroom-control-deck.sdPlugin
       - name: Package
-        run: npx streamdeck pack com.imsammy.lightroom-control-deck.sdPlugin --output ..
+        run: npx streamdeck pack com.lightroom-control-deck.sdPlugin --output ..
       - name: Check the Lightroom Lua parses
         run: |
           node -e "const l=require('luaparse'),fs=require('fs'),d='../bridge/LightroomControlDeckBridge.lrdevplugin/';for(const f of fs.readdirSync(d)){l.parse(fs.readFileSync(d+f,'utf8'),{luaVersion:'5.1'});console.log('ok',f)}"
