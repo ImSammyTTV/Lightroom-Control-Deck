@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+- On JPEG and TIFF photos, the Temp dial and nudge keys move one step at a time instead of jumping by 50.
+- The plugin runs on Node.js 24 (Node.js 20 reaches end of life). Needs Stream Deck 7.1 or later, as before.
+- Updated the Stream Deck SDK and build tools; the bundled validation library (zod) moves to a version without the known memory-exhaustion issue.
+- The plugin, manifest and Lightroom bridge now all report the same version, taken from `plugin/package.json`.
+
 ## 0.1.4
 - The plugin ID is now `com.lightroom-control-deck`. If you are updating, remove the old plugin and its profile in the Stream Deck app, then install this one.
 

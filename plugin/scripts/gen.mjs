@@ -1,5 +1,5 @@
 // Generates everything derived from the model and brand: model.json, the manifest, settings pages, icons and profiles.
-import { writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 
 import { actions, uuidFor } from "./actions.mjs";
 import { brand, banks } from "./brand.mjs";
@@ -94,7 +94,7 @@ const manifest = {
   Category: brand.name,
   CategoryIcon: "imgs/category-icon",
   CodePath: "bin/plugin.js",
-  Nodejs: { Version: "20", Debug: "enabled" },
+  Nodejs: { Version: "24", Debug: "enabled" },
   OS: [{ Platform: "windows", MinimumVersion: "10" }, { Platform: "mac", MinimumVersion: "12" }],
   Software: { MinimumVersion: "7.1" },
   Actions: actions.map((a) => ({
@@ -110,4 +110,9 @@ const manifest = {
   Profiles: profiles,
 };
 writeFileSync(`${SD}/manifest.json`, JSON.stringify(manifest, null, 2));
+
+// ---- Lightroom bridge version, kept in step with package.json ------------------------------------------------------
+const infoLua = "../bridge/LightroomControlDeckBridge.lrdevplugin/Info.lua";
+const [major, minor, revision] = brand.version.split(".").map(Number);
+writeFileSync(infoLua, readFileSync(infoLua, "utf8").replace(/VERSION = \{[^}]*\}/, `VERSION = { major = ${major}, minor = ${minor}, revision = ${revision} }`));
 console.log(`manifest written: ${manifest.Actions.length} actions, ${profiles.length} profiles`);

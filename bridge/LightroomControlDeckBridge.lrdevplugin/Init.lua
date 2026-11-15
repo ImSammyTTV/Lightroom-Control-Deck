@@ -74,6 +74,8 @@ local function adjust(param, ticks)
 	-- Unknown or unavailable parameters report no range or value; skip them instead of raising an error.
 	if type(min) ~= 'number' or type(max) ~= 'number' or type(current) ~= 'number' then return end
 	local step = stepOverride[param] or ((max - min) / 200)
+	-- Temperature is in Kelvin only for raw files; JPEG/TIFF report a relative -100..100 scale, where 50 per tick is far too coarse.
+	if param == 'Temperature' and max - min <= 200 then step = 1 end
 	local value = current + ticks * step
 	if stepOverride[param] and stepOverride[param] < 1 then
 		-- Keep fine-grained sliders on their grid so repeated ticks don't drift (0.1 + 0.2 style float error).

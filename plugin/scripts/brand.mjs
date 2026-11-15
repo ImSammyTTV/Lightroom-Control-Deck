@@ -1,4 +1,9 @@
 // One place for the product's identity. Everything generated (manifest, profiles, icons, docs) reads from here.
+import { readFileSync } from "node:fs";
+
+// The version lives in package.json only; the manifest wants four parts (0.1.4 -> 0.1.4.0).
+const pkg = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+
 export const brand = {
   name: "Lightroom Control Deck",
   product: "Lightroom Control Deck for Lightroom Classic",
@@ -6,7 +11,7 @@ export const brand = {
   slug: "lightroom-control-deck",
   uuid: "com.lightroom-control-deck",
   author: "ImSammy",
-  version: "0.1.4.0",
+  version: `${pkg.version}.0`,
   repo: "ImSammyTTV/Lightroom-Control-Deck",
   commandPort: 53110,
   statusPort: 53112,
